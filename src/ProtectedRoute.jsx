@@ -1,18 +1,24 @@
 import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-/**
- * Protects admin routes using JWT token
- * If token exists → allow access
- * If not → redirect to admin login
- */
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-  // If token not found, redirect to secret admin login
-  if (!token) {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  // While checking token
+  if (isAuthenticated === null) {
+    return <p>Loading...</p>;
+  }
+
+  // Not logged in → go to admin login
+  if (!isAuthenticated) {
     return <Navigate to="/owner-login-9876" replace />;
   }
 
-  // If token exists, allow access
+  // Logged in → allow access
   return children;
 }
