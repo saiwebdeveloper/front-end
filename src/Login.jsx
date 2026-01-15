@@ -1,26 +1,41 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Dashboard from "./Dashboard";
-import StudentResult from "./StudentResult";
-import ProtectedRoute from "./ProtectedRoute";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function App() {
+export default function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const login = async () => {
+    try {
+      const res = await axios.post(
+        "https://admin-code-ka7c.onrender.com/login", // 🔥 FIX HERE
+        { username, password }
+      );
+
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard", { replace: true });
+
+    } catch (err) {
+      alert("Invalid login");
+      console.error(err);
+    }
+  };
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<StudentResult />} />
-
-        <Route path="/owner-login-9876" element={<Login />} />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <div>
+      <h2>Admin Login</h2>
+      <input
+        placeholder="Username"
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        placeholder="Password"
+        type="password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={login}>Login</button>
+    </div>
   );
 }
