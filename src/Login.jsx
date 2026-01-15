@@ -1,25 +1,26 @@
-import axios from "axios";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./Login";
+import Dashboard from "./Dashboard";
+import StudentResult from "./StudentResult";
+import ProtectedRoute from "./ProtectedRoute";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const login = async () => {
-    const res = await axios.post("https://admin-code-ka7c.onrender.com/", {
-      username,
-      password
-    });
-    localStorage.setItem("token", res.data.token);
-    window.location = "/dashboard";
-  };
-
+export default function App() {
   return (
-    <div>
-      <h2>Admin Login</h2>
-      <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
-      <input placeholder="Password" type="password" onChange={e => setPassword(e.target.value)} />
-      <button onClick={login}>Login</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<StudentResult />} />
+
+        <Route path="/owner-login-9876" element={<Login />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
